@@ -4,7 +4,7 @@ import axios from 'axios';
 const apiKey = process.env.REACT_APP_NOROFF_API_KEY; // your API key from env
 
 const api = axios.create({
-    baseURL: 'https://v2.api.noroff.dev/holidaze',
+    baseURL: 'https://v2.api.noroff.dev',
 });
 
 // Add request interceptor to attach headers dynamically
@@ -27,18 +27,19 @@ api.interceptors.request.use(
 );
 
 // Export your API functions
-const getVenues = () => api.get('/venues');
-
+const getVenues = () => api.get('/holidaze/venues');
+const register = (userData) => api.post('/auth/register', userData);
 // Correct interpolation for dynamic ID
-const getVenueDetails = (id) => api.get(`/venues/${id}`);
-const getBookings = () => api.get('/bookings');
-const login = () => api.post('/auth/login');
+const getVenueDetails = (id) => api.get(`/holidaze/venues/${id}`);
+const getBookings = () => api.get('/holidaze/bookings');
+const login = (credentials) => api.post('/auth/login', credentials);
 
 const apiClient = {
     getVenues,
     getBookings,
     login,
     getVenueDetails,
+    register,
 };
 
 export default apiClient;

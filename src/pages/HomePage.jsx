@@ -4,8 +4,12 @@ import api from '../api/api'; // Your API module with API key
 import VenueCard from '../components/VenueCard';
 import SearchBar from '../components/SearchBar';
 import Header from '../components/Header';
+import { useDispatch } from 'react-redux';
+import {setUser} from "../store/userSlice";
+import { setVenues } from '../store/venueSlice';
 
 function HomePage() {
+    const dispatch = useDispatch();
     const [venues, setVenues] = useState([]);
     const [bookings, setBookings] = useState([]); // Bookings data
     const [filters, setFilters] = useState({
@@ -19,6 +23,14 @@ function HomePage() {
         guests: 1,
     });
 
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            // Parse JSON and dispatch to store
+            dispatch(setUser(JSON.parse(storedUser)));
+        }
+    }, []);
+
     // Fetch venues
     useEffect(() => {
         const fetchVenues = async () => {
@@ -26,6 +38,7 @@ function HomePage() {
                 const response = await api.getVenues();
                 if (Array.isArray(response.data.data)) {
                     setVenues(response.data.data);
+                    dispatch(setVenues(response.data.data)); // save to redux
                 } else {
                     console.warn('Response data is not an array:', response.data.data);
                 }
@@ -35,6 +48,7 @@ function HomePage() {
         };
         fetchVenues();
     }, []);
+
 
     // Fetch bookings
     useEffect(() => {

@@ -1,53 +1,125 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { login } from '../features/userSlice';
-import api from '../api/api';
-import Header from "../components/Header";
+import { TextField, Button, Box, Typography, Switch, FormControlLabel } from '@mui/material';
+import api from '../api/api'; // your API calls
+import { setUser } from '../store/userSlice'; // Your Redux slice
+import Header from '../components/Header';
 
-export default function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+function LoginPage() {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const handleLogin = async () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [isVenueManager, setIsVenueManager] = useState(false); // toggle state
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         try {
-            const response = await api.login();
-            // Assuming response.data contains user info, token, role
-            const { user, token, role } = response.data;
-            localStorage.setItem('token', token);
-            dispatch(login({ user, role, token }));
+            // Pass venueManager boolean if API expects it
+            const response = await api.login({ email, password, venueManager: isVenueManager });
+            console.log('API response:', response);
+            const userData = response.data.data;
+
+            dispatch(setUser({
+                name: userData.name,
+                email: userData.email,
+                bio: userData.bio,
+                avatar: userData.avatar,
+                banner: userData.banner,
+                accessToken: userData.accessToken,
+                accountType: isVenueManager ? 'true' : 'false'
+            }));
+            localStorage.setItem('user', JSON.stringify({
+                name: userData.name,
+                email: userData.email,
+                bio: userData.bio,
+                avatar: userData.avatar,
+                banner: userData.banner,
+                accessToken: userData.accessToken,
+                accountType: isVenueManager ? 'true' : 'false'
+            }));
+
+           navigate('/profile');
         } catch (err) {
-            console.error('Login failed', err);
-            // handle error
+            console.error(err);
+            setError('Login failed. Please check your credentials.');
         }
     };
 
     return (
         <>
             <Header />
-        <Container maxWidth="sm">
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: '100vh',
+                    backgroundColor: '#f0f0f0',
+                    padding: 4,
+                }}
+            >
+                <Typography variant="h4" gutterBottom>
+                    Log In
+                </Typography>
+                {error && (
+                    <Typography color="error" gutterBottom>
+                        {error}
+                    </Typography>
+                )}
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit}
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        width: '100%',
+                        maxWidth: 400,
+                        padding: 2,
+                        backgroundColor: 'white',
+                        borderRadius: 2,
+                    }}
+                >
+                    <TextField
+                        label="Email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <TextField
+                        label="Password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
 
-            <Typography variant="h4" gutterBottom>Login</Typography>
-            <TextField
-                label="Email"
-                fullWidth
-                margin="normal"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-                label="Password"
-                fullWidth
-                type="password"
-                margin="normal"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button variant="contained" color="primary" onClick={handleLogin}>
-                Login
-            </Button>
-        </Container>
+                    {/* Switch for account type */}
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={isVenueManager}
+                                onChange={(e) => setIsVenueManager(e.target.checked)}
+                                color="primary"
+                            />
+                        }
+                        label={isVenueManager ? 'Venue Manager' : 'Customer'}
+                        sx={{ marginLeft: 0 }}
+                    />
+
+                    <Button type="submit" variant="contained" color="primary" fullWidth>
+                        Log In
+                    </Button>
+                </Box>
+            </Box>
         </>
     );
 }
+
+export default LoginPage;
