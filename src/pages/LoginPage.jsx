@@ -3,6 +3,7 @@ import { TextField, Button, Container, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { login } from '../features/userSlice';
 import api from '../api/api';
+import Header from "../components/Header";
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ export default function Login() {
 
     const handleLogin = async () => {
         try {
-            const response = await api.post('/auth/login', { email, password });
+            const response = await api.login();
             // Assuming response.data contains user info, token, role
             const { user, token, role } = response.data;
             localStorage.setItem('token', token);
@@ -23,7 +24,10 @@ export default function Login() {
     };
 
     return (
+        <>
+            <Header />
         <Container maxWidth="sm">
+
             <Typography variant="h4" gutterBottom>Login</Typography>
             <TextField
                 label="Email"
@@ -44,5 +48,6 @@ export default function Login() {
                 Login
             </Button>
         </Container>
+        </>
     );
 }

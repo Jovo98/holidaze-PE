@@ -3,12 +3,13 @@ import { Container, Grid, Typography } from '@mui/material';
 import api from '../api/api'; // Your API module with API key
 import VenueCard from '../components/VenueCard';
 import SearchBar from '../components/SearchBar';
-import Header from '../components/Header'; // <-- import your header component
+import Header from '../components/Header';
 
 function HomePage() {
     const [venues, setVenues] = useState([]);
     const [bookings, setBookings] = useState([]); // Bookings data
     const [filters, setFilters] = useState({
+        id: '',
         name: '',
         country: '',
         city: '',
@@ -72,8 +73,6 @@ function HomePage() {
         const countryMatch = filters.country ? country.toLowerCase().includes(filters.country.toLowerCase()) : true;
         const city = venue.location?.city || '';
         const cityMatch = filters.city ? city.toLowerCase().includes(filters.city.toLowerCase()) : true;
-        const continent = venue.location?.continent || '';
-        const continentMatch = filters.continent ? continent.toLowerCase().includes(filters.continent.toLowerCase()) : true;
         const guestsMatch = venue.maxGuests >= filters.guests;
 
         // Check availability only if dates are set
@@ -82,12 +81,11 @@ function HomePage() {
             available = checkAvailability(venue.id, dateFromFilter, dateToFilter);
         }
 
-        return nameMatch && countryMatch && cityMatch && continentMatch && guestsMatch && available;
+        return nameMatch && countryMatch && cityMatch && guestsMatch && available;
     });
 
     return (
         <>
-            {/* Your header component at the top */}
             <Header />
 
             <Container maxWidth="lg" sx={{ py: 4 }}>

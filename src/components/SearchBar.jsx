@@ -8,9 +8,7 @@ function SearchBar({ filters, setFilters }) {
 
     return (
         <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
-            <Typography variant="subtitle1" sx={{ minWidth: 150 }}>
-                Filters:
-            </Typography>
+
             {/* Location filter */}
             <TextField
                 label="Location"

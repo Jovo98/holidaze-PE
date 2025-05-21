@@ -28,11 +28,17 @@ api.interceptors.request.use(
 
 // Export your API functions
 const getVenues = () => api.get('/venues');
+
+// Correct interpolation for dynamic ID
+const getVenueDetails = (id) => api.get(`/venues/${id}`);
 const getBookings = () => api.get('/bookings');
+const login = () => api.post('/auth/login');
 
 const apiClient = {
     getVenues,
     getBookings,
+    login,
+    getVenueDetails,
 };
 
 export default apiClient;

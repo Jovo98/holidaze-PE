@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button , Link} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/userSlice.jsx';
 
@@ -16,7 +16,9 @@ function Header() {
         <AppBar position="static">
             <Toolbar>
                 <Typography variant="h6" style={{ flexGrow: 1 }}>
-                    Holidaze
+                    <Button color="inherit" href="/">
+                        Holidaze
+                    </Button>
                 </Typography>
                 {user.user ? (
                     <Button color="inherit" onClick={handleLogout}>Logout</Button>

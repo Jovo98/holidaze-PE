@@ -14,7 +14,7 @@ function App() {
         <Router>
             <Routes>
                 <Route path="/" element={<HomePage/>} /> {/* Home shows venue list */}
-                <Route path="/venue/:id" element={<VenueDetailsPage />} /> {/* Dynamic for venue details */}
+                <Route path="/venues/:id" element={<VenueDetailsPage />} /> {/* Dynamic for venue details */}
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/profile" element={<UserProfilePage />} />
