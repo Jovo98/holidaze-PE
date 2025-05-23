@@ -1,17 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Grid, Typography } from '@mui/material';
-import api from '../api/api'; // Your API module with API key
+import api from '../api/api'; // Your API module with API calls
 import VenueCard from '../components/VenueCard';
 import SearchBar from '../components/SearchBar';
 import Header from '../components/Header';
 import { useDispatch } from 'react-redux';
-import {setUser} from "../store/userSlice";
+import { setUser } from '../store/userSlice';
 import { setVenues } from '../store/venueSlice';
 
 function HomePage() {
     const dispatch = useDispatch();
+
+    // Fetch and set user from localStorage once on component mount
+    useEffect(() => {
+        const storedUserStr = localStorage.getItem('user');
+        if (storedUserStr) {
+            const storedUser = JSON.parse(storedUserStr);
+            // Convert accountType to boolean
+            const accountTypeBool = storedUser.accountType === 'true';
+
+            dispatch(setUser({
+                ...storedUser,
+                // Ensure accountType is boolean
+                accountType: accountTypeBool,
+            }));
+        }
+    }, [dispatch]);
+
     const [venues, setVenues] = useState([]);
     const [bookings, setBookings] = useState([]); // Bookings data
+
     const [filters, setFilters] = useState({
         id: '',
         name: '',
@@ -22,14 +40,6 @@ function HomePage() {
         checkOut: '',
         guests: 1,
     });
-
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            // Parse JSON and dispatch to store
-            dispatch(setUser(JSON.parse(storedUser)));
-        }
-    }, []);
 
     // Fetch venues
     useEffect(() => {
@@ -47,8 +57,7 @@ function HomePage() {
             }
         };
         fetchVenues();
-    }, []);
-
+    }, [dispatch]);
 
     // Fetch bookings
     useEffect(() => {
@@ -101,13 +110,12 @@ function HomePage() {
     return (
         <>
             <Header />
+            {/* Filter form */}
+            <SearchBar filters={filters} setFilters={setFilters} />
 
-            <Container maxWidth="lg" sx={{ py: 4 }}>
-                <Typography variant="h4" gutterBottom>
-                    Explore Venues
-                </Typography>
-                {/* Filter form */}
-                <SearchBar filters={filters} setFilters={setFilters} />
+            <Container maxWidth="lg" sx={{ py: 4, pt: 10 }}>
+
+
 
                 {/* Venue list */}
                 <Grid container spacing={2}>

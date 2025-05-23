@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import { TextField, Button, Box, Typography, Link } from '@mui/material';
 import apiClient from '../api/api'; // Adjust import path
 import Header from '../components/Header';
 
@@ -111,8 +111,8 @@ function RegistrationPage() {
                     {/* Conditional subtext */}
                     <Typography variant="h4" color="textPrimary" sx={{ marginTop: 2 }}>
                         {isVenueManager
-                            ? 'Venue Manager Account'
-                            : 'Customer Account '}
+                            ? 'Venue Manager'
+                            : 'Customer '}
                     </Typography>
                     <Typography variant="body1" color="textSecondary" sx={{ marginTop: 1 }}>
                         {isVenueManager
@@ -169,6 +169,12 @@ function RegistrationPage() {
                 <Button variant="contained" color="primary" fullWidth sx={{ marginTop: 2 }} type="submit">
                     Register
                 </Button>
+                <Box sx={{display: 'flex', justifyContent: 'center', alignItems:'center', flexDirection:'column'}}>
+                    <Typography>
+                        Already have account? <Link href="./login"> Log in here.</Link>
+                    </Typography>
+
+                </Box>
             </Box>
         </Box>
         </>

@@ -9,7 +9,10 @@ import LoginPage from './pages/LoginPage.jsx';
 import UserProfilePage from './pages/UserProfilePage.jsx';
 import ManageVenues from './pages/ManageVenues.jsx';
 
+
+
 function App() {
+
     return (
         <Router>
             <Routes>
