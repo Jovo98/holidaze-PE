@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUser, clearUser } from '../store/userSlice';
+import { setUser } from '../store/userSlice';
 
 const LoadUser = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            dispatch(setUser(JSON.parse(storedUser)));
-        } else {
-            dispatch(clearUser()); // optional
+        const storedUserStr = localStorage.getItem('user');
+        if (storedUserStr) {
+            try {
+                const storedUser = JSON.parse(storedUserStr);
+                storedUser.accountType = storedUser.accountType === 'true';
+                dispatch(setUser(storedUser));
+            } catch (err) {
+                console.error('Error parsing stored user:', err);
+            }
         }
     }, [dispatch]);
 

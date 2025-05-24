@@ -10,7 +10,7 @@ import LoadUser from './components/LoadUser';
 ReactDOM.createRoot(document.getElementById('root')).render(
     <Provider store={store}>
         <ThemeProvider theme={theme}>
-            <LoadUser />   {/* This loads user data on app start */}
+            <LoadUser />
             <App />
         </ThemeProvider>
     </Provider>

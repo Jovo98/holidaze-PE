@@ -2,7 +2,8 @@ import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import apiClient from '../api/api';
 import Header from '../components/Header';
-import { Container, Typography, Box, CircularProgress } from '@mui/material';
+import { Container, Typography, Box, CircularProgress, Button } from '@mui/material';
+import BookingForm from '../components/BookingForm';
 
 function VenueDetailPage() {
     const { id } = useParams();
@@ -15,6 +16,7 @@ function VenueDetailPage() {
             .then((response) => {
                 if (response.data && response.data.data) {
                     setVenue(response.data.data);
+                    console.log(response.data.data)
                 } else {
                     throw new Error('Invalid data format');
                 }
@@ -36,16 +38,7 @@ function VenueDetailPage() {
         <>
             <Header />
             <Container maxWidth="md" sx={{ pt: 12, pb: 4 }}>
-                {/* Venue Name */}
-                <Typography variant="h4" gutterBottom>
-                    {venue.name}
-                </Typography>
-                {/* Description */}
-                {venue.description && (
-                    <Typography variant="body1" paragraph>
-                        {venue.description}
-                    </Typography>
-                )}
+
                 {/* Media Image */}
                 {venue.media && venue.media.length > 0 && (
                     <Box mb={3} sx={{ width: '100%', textAlign: 'center' }}>
@@ -55,6 +48,16 @@ function VenueDetailPage() {
                             style={{ width: '100%', height: 'auto', borderRadius: 8 }}
                         />
                     </Box>
+                )}
+                {/* Venue Name */}
+                <Typography variant="h5" gutterBottom>
+                    {venue.name}
+                </Typography>
+                {/* Description */}
+                {venue.description && (
+                    <Typography variant="body2" paragraph>
+                        {venue.description}
+                    </Typography>
                 )}
                 {/* Details List */}
                 <Box component="ul" sx={{ listStyle: 'none', padding: 0, margin: 0, lineHeight: 2 }}>
@@ -70,6 +73,12 @@ function VenueDetailPage() {
                     <li>
                         <strong>Location:</strong> {venue.location.address}, {venue.location.city}
                     </li>
+                </Box>
+                <Box>
+                    <Button>Book Venue</Button>
+                </Box>
+                <Box>
+                    <BookingForm />
                 </Box>
             </Container>
         </>

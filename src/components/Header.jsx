@@ -16,7 +16,6 @@ function Header() {
         navigate('/');
     };
 
-
     const accountType = user.accountType;
 
     return (
@@ -63,8 +62,9 @@ function Header() {
                     </Box>
                 ) : (
                     <>
-                        <Button color="inherit" href="/login">Login</Button>
-                        <Button color="inherit" href="/register">Register</Button>
+                        <Button variant="body1" color="inherit" href="/register">Register</Button>
+                        <Typography>or</Typography>
+                        <Button variant="body1" color="inherit" href="/login">Login</Button>
                     </>
                 )}
             </Toolbar>
