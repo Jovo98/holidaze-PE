@@ -18,11 +18,12 @@ function VenueCard({ venue }) {
             sx={{
                 width: '100%',
                 maxWidth: 350,
-                height: 400,
+
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
                 cursor: 'pointer',
+
             }}
             onClick={handleCardClick}
         >

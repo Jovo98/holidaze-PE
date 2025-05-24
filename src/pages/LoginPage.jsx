@@ -18,11 +18,14 @@ function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Pass venueManager boolean if API expects it
             const response = await api.login({ email, password, venueManager: isVenueManager });
             console.log('API response:', response);
             const userData = response.data.data;
 
+            // Save accountType as boolean
+            const accountTypeBool = isVenueManager; // just use boolean directly
+
+            // Dispatch to Redux
             dispatch(setUser({
                 name: userData.name,
                 email: userData.email,
@@ -30,8 +33,10 @@ function LoginPage() {
                 avatar: userData.avatar,
                 banner: userData.banner,
                 accessToken: userData.accessToken,
-                accountType: isVenueManager ? 'true' : 'false'
+                accountType: accountTypeBool, // store boolean
             }));
+
+            // Save to localStorage (convert boolean to string)
             localStorage.setItem('user', JSON.stringify({
                 name: userData.name,
                 email: userData.email,
@@ -39,10 +44,10 @@ function LoginPage() {
                 avatar: userData.avatar,
                 banner: userData.banner,
                 accessToken: userData.accessToken,
-                accountType: isVenueManager ? 'true' : 'false'
+                accountType: accountTypeBool ? 'true' : 'false', // store as string
             }));
 
-           navigate('/profile');
+            navigate('/profile');
         } catch (err) {
             console.error(err);
             setError('Login failed. Please check your credentials.');
