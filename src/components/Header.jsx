@@ -16,11 +16,8 @@ function Header() {
         navigate('/');
     };
 
-    // Check accountType as boolean
-    const isVenueManager = user?.accountType === true;
 
-    // Use this for labels
-    const accountTypeLabel = isVenueManager ? 'Venue Manager' : 'Customer';
+    const accountType = user.accountType;
 
     return (
         <AppBar position="fixed" sx={{ width: '100%', top: 0, zIndex: 1200 }} >
@@ -40,7 +37,7 @@ function Header() {
                             </Typography>
                             {/* Account type label */}
                             <Typography variant="caption" color="textSecondary">
-                                {accountTypeLabel}
+                                {accountType ? 'Venue Manager' : 'Customer'}
                             </Typography>
                         </Box>
                         {/* Avatar */}
@@ -50,12 +47,12 @@ function Header() {
                                     src={user.data.avatar.url}
                                     alt={user.data.avatar.alt || 'Profile'}
                                     sx={{
-                                        width: 50, // bigger size
+                                        width: 50,
                                         height: 50,
                                         cursor: 'pointer',
-                                        border: '2px solid white', // small white outline
+                                        border: '2px solid white',
                                     }}
-                                    onClick={() => (window.location.href = '/profile')}
+                                    onClick={() => navigate('/profile')}
                                 />
                             )}
                         </Box>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Typography } from '@mui/material';
+import { Container, Grid} from '@mui/material';
 import api from '../api/api'; // Your API module with API calls
 import VenueCard from '../components/VenueCard';
 import SearchBar from '../components/SearchBar';

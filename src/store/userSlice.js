@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     data: null,
     token: null,
-    accountType: null,  // new field
+    accountType: null,
 };
 
 const userSlice = createSlice({
@@ -19,15 +19,20 @@ const userSlice = createSlice({
                 banner: action.payload.banner,
             };
             state.token = action.payload.accessToken;
+            // Convert accountType to boolean
             state.accountType = action.payload.accountType;
         },
         clearUser(state) {
             state.data = null;
             state.token = null;
-            state.accountType = null; // reset account type
+            state.accountType = null;
+        },
+        // Add a new reducer to update accountType
+        updateAccountType(state, action) {
+            state.accountType = action.payload;
         },
     },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, clearUser, updateAccountType } = userSlice.actions;
 export default userSlice.reducer;
