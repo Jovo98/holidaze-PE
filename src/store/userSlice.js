@@ -19,7 +19,6 @@ const userSlice = createSlice({
                 banner: action.payload.banner,
             };
             state.token = action.payload.accessToken;
-            // Convert accountType to boolean
             state.accountType = action.payload.accountType;
         },
         clearUser(state) {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { TextField, Button, Box, Typography, Switch, FormControlLabel } from '@mui/material';
+import {TextField, Button, Box, Typography, Switch, FormControlLabel, Link} from '@mui/material';
 import api from '../api/api'; // your API calls
 import { setUser } from '../store/userSlice'; // Your Redux slice
 import Header from '../components/Header';
@@ -121,6 +121,12 @@ function LoginPage() {
                     <Button type="submit" variant="contained" color="primary" fullWidth>
                         Log In
                     </Button>
+                    <Box sx={{display: 'flex', justifyContent: 'center', alignItems:'center', flexDirection:'column'}}>
+                        <Typography>
+                            Do not have an account? <Link href="./register"> Register here.</Link>
+                        </Typography>
+
+                    </Box>
                 </Box>
             </Box>
         </>

@@ -1,61 +1,80 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 
-function AvatarEditModal({ open, handleClose, avatarUrl, onSave }) {
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState(null);
+function AvatarEditModal({ open, handleClose, avatarUrl, bannerUrl, onSave }) {
+    const [avatarInput, setAvatarInput] = useState(avatarUrl || '');
+    const [bannerInput, setBannerInput] = useState(bannerUrl || '');
 
-    const handleFileChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setSelectedFile(file);
-            setPreviewUrl(URL.createObjectURL(file));
-        }
+    const [avatarPreview, setAvatarPreview] = useState(avatarUrl);
+    const [bannerPreview, setBannerPreview] = useState(bannerUrl);
+
+    const handleAvatarInputChange = (e) => {
+        const url = e.target.value;
+        setAvatarInput(url);
+        setAvatarPreview(url);
     };
 
-    const handleSave = () => {
-        // Here you would upload the image to your server, then update user avatar
-        // For demo, we simulate the change locally
-        if (previewUrl) {
-            onSave(previewUrl); // pass preview URL or new data to parent
-        }
+    const handleBannerInputChange = (e) => {
+        const url = e.target.value;
+        setBannerInput(url);
+        setBannerPreview(url);
+    };
+
+    const handleSaveClick = () => {
+        onSave({
+            avatarUrl: avatarInput,
+            bannerUrl: bannerInput,
+        });
         handleClose();
     };
 
     const handleCancel = () => {
-        // Reset state on cancel
-        setSelectedFile(null);
-        setPreviewUrl(null);
+        // Reset previews to original images
+        setAvatarInput(avatarUrl || '');
+        setBannerInput(bannerUrl || '');
+        setAvatarPreview(avatarUrl);
+        setBannerPreview(bannerUrl);
         handleClose();
     };
 
     return (
-        <Dialog open={open} onClose={handleCancel} maxWidth="xs" fullWidth>
-            <DialogTitle>Edit Avatar</DialogTitle>
-            <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
-                {/* Show selected image or current avatar */}
-                {previewUrl ? (
-                    <img src={previewUrl} alt="Preview" style={{ width: 200, borderRadius: 8, marginBottom: 16 }} />
-                ) : (
-                    <img src={avatarUrl} alt="Current Avatar" style={{ width: 200, borderRadius: 8, marginBottom: 16 }} />
+        <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
+            <DialogTitle>Edit Profile Images</DialogTitle>
+            <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, p: 3 }}>
+                <TextField
+                    label="Avatar URL"
+                    variant="outlined"
+                    value={avatarInput}
+                    onChange={handleAvatarInputChange}
+                />
+                {avatarPreview && (
+                    <div style={{ textAlign: 'center' }}>
+                        <p>Avatar Preview:</p>
+                        <img src={avatarPreview} alt="Avatar Preview" style={{ width: 200, borderRadius: 8 }} />
+                    </div>
                 )}
 
-                {/* Upload new image */}
-                <Button variant="contained" component="label">
-                    Upload New Image
-                    <input type="file" accept="image/*" hidden onChange={handleFileChange} />
-                </Button>
+                <TextField
+                    label="Banner URL"
+                    variant="outlined"
+                    value={bannerInput}
+                    onChange={handleBannerInputChange}
+                />
+                {bannerPreview && (
+                    <div style={{ textAlign: 'center', marginTop: 16 }}>
+                        <p>Banner Preview:</p>
+                        <img src={bannerPreview} alt="Banner Preview" style={{ width: '100%', maxHeight: 200, objectFit: 'cover' }} />
+                    </div>
+                )}
             </DialogContent>
-            {/* Action buttons */}
             <DialogActions>
                 <Button onClick={handleCancel} color="secondary" variant="outlined">
                     Cancel
                 </Button>
                 <Button
-                    onClick={handleSave}
+                    onClick={handleSaveClick}
                     color="primary"
                     variant="contained"
-                    disabled={!selectedFile}
                 >
                     Save
                 </Button>
