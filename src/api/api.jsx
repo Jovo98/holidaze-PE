@@ -38,8 +38,11 @@ const updateProfile = (username, data) => api.put(`holidaze/profiles/${username}
 const createBooking = (data) => api.post('/holidaze/bookings', data);
 const getProfile = (username) => api.get(`holidaze/profiles/${username}`);
 const createVenue = (data) => api.post('/holidaze/venues', data)
-
 const getUserVenues = (username) => api.get(`/holidaze/profiles/${username}/venues`);
+const getProfileBookings = (username) => api.get (`/holidaze/profiles/${username}/bookings`);
+const deleteBooking = (id) => api.delete (`/holidaze/bookings/${id}`)
+const deleteVenue = (venueId) => api.delete (`/holidaze/venues/${venueId}`)
+const putVenue = (id, data) => api.put(`/holidaze/venues/${id}`, data);
 
 const apiClient = {
     getVenues,
@@ -52,6 +55,10 @@ const apiClient = {
     createBooking,
     createVenue,
     getUserVenues,
+    getProfileBookings,
+    deleteBooking,
+    putVenue,
+    deleteVenue,
 };
 
 export default apiClient;

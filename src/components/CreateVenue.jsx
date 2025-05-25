@@ -9,8 +9,8 @@ import {
     Button,
     Box,
     Typography,
+    Snackbar,
 } from '@mui/material';
-import axios from 'axios';
 import apiClient from "../api/api";
 
 const CreateVenue = ({ open, onClose }) => {
@@ -36,6 +36,10 @@ const CreateVenue = ({ open, onClose }) => {
         },
     });
 
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
 
@@ -44,20 +48,18 @@ const CreateVenue = ({ open, onClose }) => {
             const index = parseInt(parts[1], 10);
             const field = parts[2];
 
-            setFormData(prev => {
+            setFormData((prev) => {
                 const newMedia = [...prev.media];
                 newMedia[index] = {
                     ...newMedia[index],
                     [field]: value,
                 };
-                return {
-                    ...prev,
-                    media: newMedia,
-                };
+                return { ...prev, media: newMedia };
             });
         } else if (name.includes('.')) {
+            // nested object (meta, location)
             const [parent, child] = name.split('.');
-            setFormData(prev => ({
+            setFormData((prev) => ({
                 ...prev,
                 [parent]: {
                     ...prev[parent],
@@ -65,129 +67,184 @@ const CreateVenue = ({ open, onClose }) => {
                 },
             }));
         } else {
+            // top-level fields
             let newValue = value;
-            if (name === 'price' || name === 'maxGuests') {
-                newValue = parseFloat(value);
+
+            // Convert to number where appropriate
+            if (name === 'price') {
+                const num = parseFloat(newValue);
+                newValue = isNaN(num) ? 0 : Math.min(num, 10000);
             }
-            setFormData(prev => ({
+            if (name === 'maxGuests') {
+                newValue = Math.min(parseInt(newValue, 10) || 0, 100);
+            }
+            if (name === 'rating') {
+                const num = parseFloat(newValue);
+                newValue = isNaN(num) ? 0 : Math.min(num, 5);
+            }
+
+            setFormData((prev) => ({
                 ...prev,
                 [name]: newValue,
             }));
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleMetaChange = (key, checked) => {
+        setFormData((prev) => ({
+            ...prev,
+            meta: { ...prev.meta, [key]: checked },
+        }));
+    };
+
+    const handleSave = async () => {
+        setLoading(true);
         try {
-            const response = await apiClient.createVenue(formData);
-            console.log('Venue created:', response.data);
+            await apiClient.createVenue(formData);
+            setSnackbarMessage('Venue created successfully!');
+            setSnackbarOpen(true);
             onClose();
         } catch (error) {
             console.error('Error creating venue:', error);
+            setSnackbarMessage('Failed to create venue.');
+            setSnackbarOpen(true);
+        } finally {
+            setLoading(false);
         }
     };
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle>Create New Venue</DialogTitle>
-            <DialogContent dividers>
-                <Box
-                    component="form"
-                    onSubmit={handleSubmit}
-                    sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
-                >
-                    <TextField
-                        label="Venue Name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        fullWidth
-                    />
-                    <TextField
-                        label="Description"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        multiline
-                        minRows={3}
-                        required
-                        fullWidth
-                    />
+            <DialogTitle>Create a New Venue</DialogTitle>
+            <DialogContent style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '80vh', overflowY: 'auto' }}>
 
-                    <TextField
-                        label="Price"
-                        type="number"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleChange}
-                        fullWidth
-                    />
-                    <TextField
-                        label="Max Guests"
-                        type="number"
-                        name="maxGuests"
-                        value={formData.maxGuests}
-                        onChange={handleChange}
-                        fullWidth
-                    />
+                {/* Name */}
+                <TextField
+                    label="Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    fullWidth
+                />
 
-                    {/* Meta Checkboxes */}
-                    <Typography variant="h6" sx={{ marginTop: 2 }}>Meta</Typography>
+                {/* Description */}
+                <TextField
+                    label="Description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    multiline
+                    minRows={3}
+                    fullWidth
+                />
+
+                {/* Price */}
+                <TextField
+                    label="Price"
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={(e) => handleChange({ target: { name: 'price', value: e.target.value, type: 'number' } })}
+                    inputProps={{ max: 10000 }}
+                    fullWidth
+                />
+
+                {/* Max Guests */}
+                <TextField
+                    label="Max Guests (max 100)"
+                    type="number"
+                    name="maxGuests"
+                    value={formData.maxGuests}
+                    onChange={(e) => handleChange({ target: { name: 'maxGuests', value: e.target.value, type: 'number' } })}
+                    inputProps={{ min: 0, max: 100 }}
+                    fullWidth
+                />
+
+                {/* Rating */}
+                <TextField
+                    label="Rating"
+                    type="number"
+                    name="rating"
+                    value={formData.rating}
+                    onChange={(e) => handleChange({ target: { name: 'rating', value: e.target.value, type: 'number' } })}
+                    inputProps={{ max: 5, min: 0 }}
+                    fullWidth
+                />
+
+                {/* Meta options */}
+                <Typography variant="h6">Features</Typography>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                     {Object.keys(formData.meta).map((key) => (
                         <FormControlLabel
                             key={key}
                             control={
                                 <Checkbox
                                     checked={formData.meta[key]}
-                                    onChange={handleChange}
+                                    onChange={(e) => handleMetaChange(key, e.target.checked)}
                                     name={`meta.${key}`}
                                 />
                             }
                             label={key.charAt(0).toUpperCase() + key.slice(1)}
                         />
                     ))}
+                </div>
 
-                    {/* Location Fields */}
-                    <Typography variant="h6" sx={{ marginTop: 2 }}>Location</Typography>
-                    {Object.keys(formData.location).map((key) => (
+                {/* Location Fields */}
+                <Typography variant="h6">Location</Typography>
+                {Object.keys(formData.location).map((key) => (
+                    <TextField
+                        key={key}
+                        label={key.charAt(0).toUpperCase() + key.slice(1)}
+                        name={`location.${key}`}
+                        value={formData.location[key]}
+                        onChange={handleChange}
+                        fullWidth
+                    />
+                ))}
+
+                {/* Media URLs */}
+                <Typography variant="h6">Media</Typography>
+                {formData.media.map((mediaItem, index) => (
+                    <React.Fragment key={index}>
                         <TextField
-                            key={key}
-                            label={key.charAt(0).toUpperCase() + key.slice(1)}
-                            name={`location.${key}`}
-                            value={formData.location[key]}
+                            label="Image URL"
+                            name={`media.${index}.url`}
+                            value={mediaItem.url}
                             onChange={handleChange}
                             fullWidth
                         />
-                    ))}
+                        <TextField
+                            label="Alt Text"
+                            name={`media.${index}.alt`}
+                            value={mediaItem.alt}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                    </React.Fragment>
+                ))}
 
-                    {/* Media URLs */}
-                    <Typography variant="h6" sx={{ marginTop: 2 }}>Media</Typography>
-                    <TextField
-                        label="Image URL"
-                        name="media.0.url"
-                        value={formData.media[0].url}
-                        onChange={handleChange}
-                        fullWidth
-                    />
-                    <TextField
-                        label="Image Alt Text"
-                        name="media.0.alt"
-                        value={formData.media[0].alt}
-                        onChange={handleChange}
-                        fullWidth
-                    />
-
-                    {/* Buttons */}
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-                        <Button variant="contained" color="primary" type="submit">
-                            Create Venue
-                        </Button>
-                        <Button variant="outlined" color="secondary" onClick={onClose}>
-                            Cancel
-                        </Button>
-                    </Box>
+                {/* Action Buttons */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSave}
+                        disabled={loading}
+                    >
+                        {loading ? 'Saving...' : 'Save'}
+                    </Button>
+                    <Button variant="outlined" color="secondary" onClick={onClose} disabled={loading}>
+                        Cancel
+                    </Button>
                 </Box>
             </DialogContent>
+
+            {/* Snackbar for feedback */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                message={snackbarMessage}
+                onClose={() => setSnackbarOpen(false)}
+            />
         </Dialog>
     );
 }
