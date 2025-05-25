@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {TextField, Button, Box, Typography, Switch, FormControlLabel, Link} from '@mui/material';
-import api from '../api/api'; // your API calls
-import { setUser } from '../store/userSlice'; // Your Redux slice
+import api from '../api/api';
+import { setUser } from '../store/userSlice';
 import Header from '../components/Header';
 
 function LoginPage() {
@@ -13,19 +13,16 @@ function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [isVenueManager, setIsVenueManager] = useState(false); // toggle state
+    const [isVenueManager, setIsVenueManager] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await api.login({ email, password, venueManager: isVenueManager });
-            console.log('API response:', response);
             const userData = response.data.data;
 
-            // Save accountType as boolean
-            const accountTypeBool = isVenueManager; // just use boolean directly
+            const accountTypeBool = isVenueManager;
 
-            // Dispatch to Redux
             dispatch(setUser({
                 name: userData.name,
                 email: userData.email,
@@ -33,10 +30,9 @@ function LoginPage() {
                 avatar: userData.avatar,
                 banner: userData.banner,
                 accessToken: userData.accessToken,
-                accountType: accountTypeBool, // store boolean
+                accountType: accountTypeBool,
             }));
 
-            // Save to localStorage (convert boolean to string)
             localStorage.setItem('user', JSON.stringify({
                 name: userData.name,
                 email: userData.email,
@@ -44,7 +40,7 @@ function LoginPage() {
                 avatar: userData.avatar,
                 banner: userData.banner,
                 accessToken: userData.accessToken,
-                accountType: accountTypeBool ? 'true' : 'false', // store as string
+                accountType: accountTypeBool ? 'true' : 'false',
             }));
 
             navigate('/profile');
@@ -105,7 +101,6 @@ function LoginPage() {
                         required
                     />
 
-                    {/* Switch for account type */}
                     <FormControlLabel
                         control={
                             <Switch

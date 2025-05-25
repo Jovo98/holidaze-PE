@@ -2,20 +2,20 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
     typography: {
-        fontFamily: `'Verdana', 'sans-serif'`, //''Arial', 'Helvetica', 'Georgia', 'Times New Roman', 'Courier New', 'Verdana', etc.
+        fontFamily: `'Roboto', 'Verdana', 'sans-serif'`, //''Arial', 'Helvetica', 'Georgia', 'Times New Roman', 'Courier New', 'Verdana', etc.
         button: {
             textTransform: 'none'
         }
     },
     palette: {
         primary: {
-            main: '#1976d2', // your primary color
+            main: '#b75d5d',
         },
         secondary: {
-            main: '#994cda', // your secondary color
+            main: '#c091f8',
         },
         threedary: {
-            main: '#ffffff', // your secondary color
+            main: '#ffffff',
         },
 
     },

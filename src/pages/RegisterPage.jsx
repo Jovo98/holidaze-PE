@@ -1,45 +1,65 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, Link } from '@mui/material';
-import apiClient from '../api/api'; // Adjust import path
+import apiClient from '../api/api';
 import Header from '../components/Header';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../store/userSlice';
 
 function RegistrationPage() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [isVenueManager, setIsVenueManager] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
     });
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
+    const [message] = useState('');
+    const [error] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+
+
     const handleRegister = () => {
         const payload = {
             ...formData,
             venueManager: isVenueManager,
         };
-        // Remove empty optional fields
         Object.keys(payload).forEach((key) =>
             payload[key] === '' || payload[key] === undefined ? delete payload[key] : null
         );
 
         apiClient.register(payload)
-            .then(() => {
-                setMessage('Registration successful!');
-                setError('');
-            })
-            .catch((err) => {
-                const errors = err.response?.data?.errors;
-                if (errors && errors.some(e => e.message.includes('Profile already exists'))) {
-                    setError('Profile already exists');
-                } else {
-                    setError('Registration failed. Please try again.');
-                }
+            .then((response) => {
+                const userData = response.data.data;
+                const accountType = userData.venueManager ?? false;
+
+                dispatch(setUser({
+                    name: userData.name,
+                    email: userData.email,
+                    bio: userData.bio,
+                    avatar: userData.avatar,
+                    banner: userData.banner,
+                    accessToken: userData.accessToken,
+                    accountType,
+                }));
+
+                localStorage.setItem('user', JSON.stringify({
+                    name: userData.name,
+                    email: userData.email,
+                    bio: userData.bio,
+                    avatar: userData.avatar,
+                    banner: userData.banner,
+                    accessToken: userData.accessToken,
+                    accountType,
+                    })
+                );
+                navigate('/profile');
             });
     };
 
@@ -58,11 +78,6 @@ function RegistrationPage() {
                 padding: 4,
             }}
         >
-
-
-
-
-
             <Box
                 component="form"
                 sx={{
@@ -108,7 +123,6 @@ function RegistrationPage() {
 
                 </Box>
                 <Box>
-                    {/* Conditional subtext */}
                     <Typography variant="h4" color="textPrimary" sx={{ marginTop: 2 }}>
                         {isVenueManager
                             ? 'Venue Manager'
@@ -130,7 +144,6 @@ function RegistrationPage() {
                         {error}
                     </Typography>
                 )}
-                {/* Name input */}
                 <TextField
                     label="Name"
                     name="name"
@@ -140,7 +153,6 @@ function RegistrationPage() {
                     onChange={handleChange}
                 />
 
-                {/* Email input */}
                 <TextField
                     label="Email"
                     type="email"
@@ -151,7 +163,6 @@ function RegistrationPage() {
                     onChange={handleChange}
                 />
 
-                {/* Password input */}
                 <TextField
                     label="Password"
                     type="password"
@@ -161,11 +172,6 @@ function RegistrationPage() {
                     value={formData.password}
                     onChange={handleChange}
                 />
-
-                {/* Toggle buttons for role */}
-
-
-                {/* Register button */}
                 <Button variant="contained" color="primary" fullWidth sx={{ marginTop: 2 }} type="submit">
                     Register
                 </Button>

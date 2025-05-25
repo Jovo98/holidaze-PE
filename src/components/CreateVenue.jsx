@@ -57,7 +57,6 @@ const CreateVenue = ({ open, onClose }) => {
                 return { ...prev, media: newMedia };
             });
         } else if (name.includes('.')) {
-            // nested object (meta, location)
             const [parent, child] = name.split('.');
             setFormData((prev) => ({
                 ...prev,
@@ -67,10 +66,7 @@ const CreateVenue = ({ open, onClose }) => {
                 },
             }));
         } else {
-            // top-level fields
             let newValue = value;
-
-            // Convert to number where appropriate
             if (name === 'price') {
                 const num = parseFloat(newValue);
                 newValue = isNaN(num) ? 0 : Math.min(num, 10000);
@@ -103,7 +99,6 @@ const CreateVenue = ({ open, onClose }) => {
             await apiClient.createVenue(formData);
             setSnackbarMessage('Venue created successfully!');
             setSnackbarOpen(true);
-            onClose();
         } catch (error) {
             console.error('Error creating venue:', error);
             setSnackbarMessage('Failed to create venue.');
@@ -116,8 +111,6 @@ const CreateVenue = ({ open, onClose }) => {
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle>Create a New Venue</DialogTitle>
             <DialogContent style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '80vh', overflowY: 'auto' }}>
-
-                {/* Name */}
                 <TextField
                     label="Name"
                     name="name"
@@ -125,8 +118,6 @@ const CreateVenue = ({ open, onClose }) => {
                     onChange={handleChange}
                     fullWidth
                 />
-
-                {/* Description */}
                 <TextField
                     label="Description"
                     name="description"
@@ -136,8 +127,6 @@ const CreateVenue = ({ open, onClose }) => {
                     minRows={3}
                     fullWidth
                 />
-
-                {/* Price */}
                 <TextField
                     label="Price"
                     type="number"
@@ -147,8 +136,6 @@ const CreateVenue = ({ open, onClose }) => {
                     inputProps={{ max: 10000 }}
                     fullWidth
                 />
-
-                {/* Max Guests */}
                 <TextField
                     label="Max Guests (max 100)"
                     type="number"
@@ -158,8 +145,6 @@ const CreateVenue = ({ open, onClose }) => {
                     inputProps={{ min: 0, max: 100 }}
                     fullWidth
                 />
-
-                {/* Rating */}
                 <TextField
                     label="Rating"
                     type="number"
@@ -169,8 +154,6 @@ const CreateVenue = ({ open, onClose }) => {
                     inputProps={{ max: 5, min: 0 }}
                     fullWidth
                 />
-
-                {/* Meta options */}
                 <Typography variant="h6">Features</Typography>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     {Object.keys(formData.meta).map((key) => (
@@ -187,8 +170,6 @@ const CreateVenue = ({ open, onClose }) => {
                         />
                     ))}
                 </div>
-
-                {/* Location Fields */}
                 <Typography variant="h6">Location</Typography>
                 {Object.keys(formData.location).map((key) => (
                     <TextField
@@ -200,8 +181,6 @@ const CreateVenue = ({ open, onClose }) => {
                         fullWidth
                     />
                 ))}
-
-                {/* Media URLs */}
                 <Typography variant="h6">Media</Typography>
                 {formData.media.map((mediaItem, index) => (
                     <React.Fragment key={index}>
@@ -221,8 +200,6 @@ const CreateVenue = ({ open, onClose }) => {
                         />
                     </React.Fragment>
                 ))}
-
-                {/* Action Buttons */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
                     <Button
                         variant="contained"
@@ -237,13 +214,15 @@ const CreateVenue = ({ open, onClose }) => {
                     </Button>
                 </Box>
             </DialogContent>
-
-            {/* Snackbar for feedback */}
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}
+                onClose={() => {
+                    setSnackbarOpen(false);
+                    setSnackbarMessage('');
+                }}
                 message={snackbarMessage}
-                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             />
         </Dialog>
     );

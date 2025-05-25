@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Dialog,
     DialogTitle,
@@ -36,6 +37,7 @@ const EditVenues = ({ open, handleClose, username }) => {
     });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -45,7 +47,6 @@ const EditVenues = ({ open, handleClose, username }) => {
             setLoading(true);
             try {
                 const response = await apiClient.getUserVenues(username);
-                // response.data is an object with 'data' array
                 if (response.data && Array.isArray(response.data.data)) {
                     setVenues(response.data.data);
                 } else {
@@ -130,7 +131,6 @@ const EditVenues = ({ open, handleClose, username }) => {
 
     return (
         <>
-            {/* Main Venues List Dialog */}
             <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
                 <DialogTitle>My Venues</DialogTitle>
                 <DialogContent>
@@ -144,12 +144,18 @@ const EditVenues = ({ open, handleClose, username }) => {
                         <List>
                             {venues.map((venue) => (
                                 <ListItem key={venue.id} button>
-                                    <ListItemText primary={venue.name} />
-                                    {/* Edit icon */}
+                                    <ListItemText
+                                        primary={
+                                            <span
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => navigate(`/venues/${venue.id}`)}
+                                            > {venue.name}
+                                            </span>
+                                        }
+                                    />
                                     <IconButton onClick={() => handleOpenEdit(venue)}>
                                         <EditIcon />
                                     </IconButton>
-                                    {/* Trashcan (Delete) icon */}
                                     <IconButton
                                         onClick={() => handleDelete(venue.id)}
                                         aria-label="delete"
@@ -163,7 +169,6 @@ const EditVenues = ({ open, handleClose, username }) => {
                 </DialogContent>
             </Dialog>
 
-            {/* Edit Venue Modal */}
             <Dialog
                 open={editOpen}
                 onClose={() => setEditOpen(false)}
@@ -180,7 +185,6 @@ const EditVenues = ({ open, handleClose, username }) => {
                         overflowY: 'auto'
                     }}
                 >
-                    {/* Basic Info Fields */}
                     <TextField
                         label="Name"
                         value={editForm.name}
@@ -193,8 +197,6 @@ const EditVenues = ({ open, handleClose, username }) => {
                         onChange={(e) => handleChange('description', e.target.value)}
                         fullWidth
                     />
-
-                    {/* Price */}
                     <TextField
                         label="Price"
                         type="number"
@@ -203,7 +205,6 @@ const EditVenues = ({ open, handleClose, username }) => {
                         onChange={(e) => handleChange('price', parseFloat(e.target.value) || 0)}
                         fullWidth
                     />
-
                     <TextField
                         label="Max Guests"
                         type="number"
@@ -212,9 +213,6 @@ const EditVenues = ({ open, handleClose, username }) => {
                         onChange={(e) => handleChange('maxGuests', parseInt(e.target.value) || 0)}
                         fullWidth
                     />
-
-
-                    {/* Rating */}
                     <TextField
                         label="Rating"
                         type="number"
@@ -223,8 +221,6 @@ const EditVenues = ({ open, handleClose, username }) => {
                         onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
                         fullWidth
                     />
-
-                    {/* Meta options */}
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <FormControlLabel
                             control={
@@ -264,7 +260,6 @@ const EditVenues = ({ open, handleClose, username }) => {
                         />
                     </div>
 
-                    {/* Location fields */}
                     <TextField
                         label="Address"
                         value={editForm.location.address}
@@ -330,12 +325,12 @@ const EditVenues = ({ open, handleClose, username }) => {
                     </Button>
                 </DialogContent>
             </Dialog>
-            {/* Snackbar for confirmation */}
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={3000}
                 onClose={() => setSnackbarOpen(false)}
                 message={snackbarMessage}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             />
         </>
     );

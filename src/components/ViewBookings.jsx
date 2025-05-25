@@ -86,6 +86,7 @@ const ViewBookings = ({ open, handleClose, username }) => {
                 autoHideDuration={3000}
                 onClose={() => setSnackbarOpen(false)}
                 message={snackbarMessage}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             />
         </Dialog>
     );

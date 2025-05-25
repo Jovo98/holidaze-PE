@@ -29,7 +29,6 @@ function AvatarEditModal({ open, handleClose, avatarUrl, bannerUrl, onSave }) {
     };
 
     const handleCancel = () => {
-        // Reset previews to original images
         setAvatarInput(avatarUrl || '');
         setBannerInput(bannerUrl || '');
         setAvatarPreview(avatarUrl);
