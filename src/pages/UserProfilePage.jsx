@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Header from '../components/Header';
 import AvatarEditModal from '../components/AvatarEdit';
 import EditVenues from '../components/EditVenues';
+import ViewBookings from "../components/ViewBookings";
 import CreateVenue from '../components/CreateVenue';
 import { Box, Typography, Avatar, CircularProgress, Button } from '@mui/material';
 import apiClient from '../api/api';
@@ -18,6 +19,7 @@ function ProfilePage() {
     const [isVenueModalOpen, setIsVenueModalOpen] = useState(false);
     const [openEditVenues, setOpenEditVenues] = useState(false);
     const username = useSelector((state) => state.user.data?.name);
+    const [openBookings, setOpenBookings] = useState(false);
 
     const handleOpenCreateVenue = () => {
         setIsVenueModalOpen(true);
@@ -202,7 +204,7 @@ function ProfilePage() {
                 <Typography variant="h4" mt={2}>{name}</Typography>
                 <Typography variant="body1"><strong>Email:</strong> {email}</Typography>
                 <Typography variant="body1"><strong>Bio:</strong> {bio || 'No bio provided.'}</Typography>
-
+                <Box sx={{ display:'flex', gap: 2, justifyContent:'center', mb: 2,}}>
                 {canCreateVenue && (
                     <Button
                         variant="contained"
@@ -225,11 +227,25 @@ function ProfilePage() {
                         Edit venues
                     </Button>
                 )}
+
                 <EditVenues
                     open={openEditVenues}
                     handleClose={() => setOpenEditVenues(false)}
                     username={username}
                 />
+                </Box>
+
+                <Box>
+                {/* other profile content */}
+                <Button variant="contained" onClick={() => setOpenBookings(true)}>
+                    View Upcoming Bookings
+                </Button>
+                <ViewBookings
+                    open={openBookings}
+                    handleClose={() => setOpenBookings(false)}
+                    username={username}
+                />
+                </Box>
             </Box>
 
             <AvatarEditModal
