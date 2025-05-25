@@ -22,19 +22,31 @@ function Header() {
         <AppBar position="fixed" sx={{ width: '100%', top: 0, zIndex: 1200 }} >
             <Toolbar sx={{ minHeight: 80 }}>
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                    <Button color="inherit" href="/">
+                    <Button
+                        href="/"
+                        color="inherit"
+                        sx={{
+                            fontSize: '1.5rem',
+                            fontWeight: 'bold',
+                            padding: '8px 16px',
+                            borderRadius: '8px',
+                            backgroundColor: 'transparent',
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                                transform: 'scale(1.05)',
+                            },
+                        }}
+                    >
                         Holidaze
                     </Button>
                 </Typography>
 
                 {user?.data ? (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        {/* User info */}
                         <Box sx={{ display: 'flex', flexDirection:'column',alignItems: 'center' }}>
                             <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
                                 {user.data.name}
                             </Typography>
-                            {/* Account type label */}
                             <Typography variant="caption" color="textSecondary">
                                 {accountType ? 'Venue Manager' : 'Customer'}
                             </Typography>
@@ -55,7 +67,6 @@ function Header() {
                                 />
                             )}
                         </Box>
-                        {/* Logout */}
                         <Button color="inherit" onClick={handleLogout}>
                             Logout
                         </Button>

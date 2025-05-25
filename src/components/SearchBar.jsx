@@ -18,7 +18,7 @@ function SearchBar({ filters, setFilters }) {
                 {/* Single location search box */}
                 <TextField
                     label="Location"
-                    placeholder="City, Country, Address..."
+                    placeholder="Name or Location"
                     value={filters.locationSearch}
                     onChange={handleChange('locationSearch')}
                     sx={{ minWidth: 150, m: 1 }}

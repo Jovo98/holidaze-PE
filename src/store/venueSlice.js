@@ -1,8 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    venues: [], // array to hold all venues
-    // you can add more state if needed
+    venues: [],
 };
 
 const venueSlice = createSlice({
@@ -10,9 +9,8 @@ const venueSlice = createSlice({
     initialState,
     reducers: {
         setVenues(state, action) {
-            state.venues = action.payload; // payload will be array of venues
+            state.venues = action.payload;
         },
-        // optionally add more reducers like clearVenues or addVenue
     },
 });
 

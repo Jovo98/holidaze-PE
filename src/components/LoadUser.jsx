@@ -18,7 +18,7 @@ const LoadUser = () => {
         }
     }, [dispatch]);
 
-    return null; // Doesn't render anything
+    return null;
 };
 
 export default LoadUser;

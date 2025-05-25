@@ -26,7 +26,6 @@ const userSlice = createSlice({
             state.token = null;
             state.accountType = null;
         },
-        // Add a new reducer to update accountType
         updateAccountType(state, action) {
             state.accountType = action.payload;
         },

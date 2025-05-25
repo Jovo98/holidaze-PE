@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Container } from '@mui/material';
-import api from '../api/api'; // Your API module with API calls
+import api from '../api/api';
 import VenueCard from '../components/VenueCard';
 import SearchBar from '../components/SearchBar';
 import Header from '../components/Header';
@@ -10,19 +10,18 @@ import Grid from '@mui/material/Grid';
 function HomePage() {
     const dispatch = useDispatch();
     const [venues, setVenues] = useState([]);
-    const [bookings, setBookings] = useState([]); // Bookings data
+    const [bookings, setBookings] = useState([]);
     const [filters, setFilters] = useState({
         name: '',
-        locationSearch: '', // single search box for location
+        locationSearch: '',
         checkIn: '',
         checkOut: '',
         guests: 1,
     });
 
     const loaderRef = useRef(null);
-    const [visibleCount, setVisibleCount] = useState(20); // initial number of venues to show
+    const [visibleCount, setVisibleCount] = useState(20);
 
-    // Fetch venues
     useEffect(() => {
         const fetchVenues = async () => {
             try {
@@ -37,14 +36,12 @@ function HomePage() {
         fetchVenues();
     }, [dispatch]);
 
-    // IntersectionObserver for infinite scroll
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting && visibleCount < venues.length) {
-                // Increase visibleCount when near bottom
                 setTimeout(() => {
                     setVisibleCount(prev => Math.min(prev + 20, venues.length));
-                }, 300); // small delay for smoothness
+                }, 300);
             }
         });
         if (loaderRef.current) {
@@ -55,12 +52,12 @@ function HomePage() {
         };
     }, [venues, visibleCount]);
 
-    // Filtering venues
     const filteredVenues = venues.filter(venue => {
         const location = venue.location || {};
         const address = location.address || '';
         const city = location.city || '';
         const country = location.country || '';
+        const name = venue.name || '';
 
         const search = filters.locationSearch.trim().toLowerCase();
 
@@ -68,7 +65,8 @@ function HomePage() {
             !search ||
             address.toLowerCase().includes(search) ||
             city.toLowerCase().includes(search) ||
-            country.toLowerCase().includes(search);
+            country.toLowerCase().includes(search) ||
+            name.toLowerCase().includes(search);
 
         const nameMatch = venue.name.toLowerCase().includes(filters.name.toLowerCase());
         const guestsMatch = venue.maxGuests >= filters.guests;
@@ -81,7 +79,7 @@ function HomePage() {
             available = !venueBookings.some(booking => {
                 const bookedStart = new Date(booking.dateFrom);
                 const bookedEnd = new Date(booking.dateTo);
-                return dateFrom <= bookedEnd && dateTo >= bookedStart; // overlap
+                return dateFrom <= bookedEnd && dateTo >= bookedStart;
             });
         }
 
@@ -95,7 +93,7 @@ function HomePage() {
             <Header />
             <SearchBar filters={filters} setFilters={setFilters} />
 
-            <Container maxWidth="lg" sx={{ py: 4, pt: 10 }}>
+            <Container maxWidth="lg" sx={{ py: 4, pt: 8 }}>
                 <Grid container spacing={2}>
                     {venuesToRender.map((venue) => (
                         <Grid size={{ xs: 12, sm: 6, md: 4,}} key={venue.id}>
