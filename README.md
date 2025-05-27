@@ -33,22 +33,22 @@ There are two aspects to this brief: the customer-facing side of the website whe
 
 ## Getting Started
 
-```bash
+``bash
 1. Clone the repository
    git clone https://github.com/Jovo98/holidaze-PE.git
 
 
 
-```bash
+``bash
 2. Navigate to the project directory
    cd holidaze-PE
 
-```bash
+``bash
 3. Install dependencies
    npm install
 
 
-```bash
+``bash
 4. Start the development server
    npm start
 
