@@ -36,7 +36,13 @@ There are two aspects to this brief: the customer-facing side of the website whe
 1. Clone the repository
    git clone https://github.com/Jovo98/holidaze-PE.git
 
-t
+```bash
+# Example installation commands
+git clone https://github.com/yourusername/project-name.git
+cd project-name
+npm install
+
+
 2. Navigate to the project directory
    cd holidaze
 
