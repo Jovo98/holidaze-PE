@@ -41,8 +41,10 @@ There are two aspects to this brief: the customer-facing side of the website whe
 #Navigate to the project directory
    cd holidaze-PE
 ```
+```bash
 #Install dependencies
    npm install
+```
 ```bash
 #Start the development server
    npm start
