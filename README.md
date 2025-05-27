@@ -37,21 +37,14 @@ There are two aspects to this brief: the customer-facing side of the website whe
 #Clone the repository
    git clone https://github.com/Jovo98/holidaze-PE.git
 
-
-
-```bash
 #Navigate to the project directory
    cd holidaze-PE
 
-``bash
 #Install dependencies
    npm install
 
-
-``bash
 #Start the development server
    npm start
-
 
 ## API Documentation
 
