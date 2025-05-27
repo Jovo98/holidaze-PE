@@ -36,16 +36,17 @@ There are two aspects to this brief: the customer-facing side of the website whe
 ```bash
 #Clone the repository
    git clone https://github.com/Jovo98/holidaze-PE.git
-
+```
+```bash
 #Navigate to the project directory
    cd holidaze-PE
-
+```
 #Install dependencies
    npm install
-
+```bash
 #Start the development server
    npm start
-
+```
 ## API Documentation
 
 School API
